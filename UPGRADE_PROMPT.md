@@ -15,7 +15,7 @@ Dies ist ein industrielles Token-Experiment auf Solana/Pump.fun. Das System ist 
 2. **Backend:** Node.js mit tRPC, Anbindung an **Pump.fun API** für Echtzeit-Daten ($DiE24).
 3. **Frontend:** React mit TailwindCSS, industrielles Dashboard-Design.
 4. **Telegram-Bot:** 
-   - **Token:** `8630386922:AAFlTXwvWz-GSTgoNyp-y8lt6pxVYsFnX2g`
+   - **Token:** `ask ACK! 
    - **Channel:** `t.me/deadline_die24`
    - **Befehle:** `/status`, `/chart`, `/buy`, `/dashboard`.
 5. **Social Media:**
