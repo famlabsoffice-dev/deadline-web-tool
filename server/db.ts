@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, timerStatus, tokenMetrics, transactions, InsertTimerStatus, InsertTokenMetrics, InsertTransaction } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,81 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+/**
+ * Timer Queries
+ */
+export async function getTimerStatus() {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(timerStatus).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function updateTimerStatus(data: Partial<InsertTimerStatus>) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.insert(timerStatus).values({
+    secondsRemaining: data.secondsRemaining ?? 0,
+    isRunning: data.isRunning ?? 0,
+    totalTransactions: data.totalTransactions ?? 0,
+  }).onDuplicateKeyUpdate({
+    set: {
+      secondsRemaining: data.secondsRemaining,
+      isRunning: data.isRunning,
+      totalTransactions: data.totalTransactions,
+    },
+  });
+  
+  return result;
+}
+
+/**
+ * Token Metrics Queries
+ */
+export async function getLatestTokenMetrics() {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.select().from(tokenMetrics).orderBy(desc(tokenMetrics.createdAt)).limit(1);
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function createTokenMetrics(data: InsertTokenMetrics) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.insert(tokenMetrics).values(data);
+  return result;
+}
+
+/**
+ * Transaction Queries
+ */
+export async function getRecentTransactions(limit: number = 50) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const result = await db.select().from(transactions).orderBy(desc(transactions.createdAt)).limit(limit);
+  return result;
+}
+
+export async function createTransaction(data: InsertTransaction) {
+  const db = await getDb();
+  if (!db) return null;
+  
+  const result = await db.insert(transactions).values(data);
+  return result;
+}
+
+export async function getTransactionStats() {
+  const db = await getDb();
+  if (!db) return { buyCount: 0, sellCount: 0 };
+  
+  const result = await db.select().from(transactions);
+  const buyCount = result.filter(t => t.type === 'buy').length;
+  const sellCount = result.filter(t => t.type === 'sell').length;
+  
+  return { buyCount, sellCount };
+}
