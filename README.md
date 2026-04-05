@@ -203,6 +203,32 @@ pnpm test --watch
 
 ## 🏗️ Build & Deployment
 
+### Cloudflare Pages Deployment (Single-File `deadline.html`)
+
+Für das schnelle Deployment der Live-Website (`deadline.html`) auf Cloudflare Pages, folge diesen Schritten:
+
+1.  **Dateien hinzufügen und committen:**
+    ```bash
+    git add deadline.html _headers README.md
+    git commit -m "feat: DEADLINE live site"
+    ```
+2.  **Änderungen pushen:**
+    ```bash
+    git push origin main
+    ```
+3.  **Cloudflare Pages Setup:**
+    *   Gehe zu Cloudflare Pages und verbinde dein GitHub-Repository `famlabsoffice-dev/deadline-web-tool`.
+    *   Wähle als **Build Command**: `(leer lassen)`
+    *   Wähle als **Build output directory**: `(leer lassen)`
+    *   Klicke auf **Deploy**.
+
+**Wichtiger Hinweis:** Für die Produktion solltest du die `HELIUS_RPC_URL` und `HELIUS_WS_URL` in der `deadline.html` mit einem kostenlosen Helius API Key aktualisieren, um Rate Limits zu vermeiden.
+
+### Production Build (Full-Stack Backend)
+
+Für das Full-Stack Backend (falls separat gehostet):
+
+
 ### Production Build
 
 ```bash
@@ -214,6 +240,19 @@ pnpm build
 ```bash
 pnpm start
 ```
+
+## ☁️ Cloudflare Worker Setup
+
+Der Cloudflare Worker (`worker/index.ts`) ist für das On-Chain-Tracking verantwortlich. Um ihn zu deployen:
+
+1.  **Worker-Code hochladen:** Lade den Inhalt von `worker/index.ts` in einen neuen Cloudflare Worker in deinem Account hoch.
+2.  **Umgebungsvariablen setzen:** Konfiguriere die folgenden Umgebungsvariablen im Worker:
+    *   `SOLANA_RPC_URL`: Deine Solana RPC URL (z.B. ein Helius RPC Endpoint)
+    *   `TARGET_ADDRESS`: Die Contract-Adresse des DEADLINE Tokens (`ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump`)
+    *   `BACKEND_API_URL`: Die URL deines Full-Stack Backends (für `transactions.create`)
+    *   `ADMIN_TOKEN`: Ein sicherer Token zur Authentifizierung am Backend (für `protectedProcedure`)
+    *   `KV`: Binde einen Cloudflare KV Namespace namens `KV` ein, um `lastSignature` zu speichern.
+3.  **Cron-Trigger einrichten:** Konfiguriere einen Cron-Trigger, damit der Worker regelmäßig (z.B. jede Minute) ausgeführt wird.
 
 ## 📊 Datenbankschema
 

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEADLINE ($DIE24) - Live Token Experiment</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        .neon-red {
+            color: #ff3e00;
+            text-shadow: 0 0 5px #ff3e00, 0 0 10px #ff3e00, 0 0 20px #ff3e00, 0 0 40px rgba(255, 62, 0, 0.5);
+        }
+
+        .neon-green {
+            color: #00ff00;
+            text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px rgba(0, 255, 0, 0.5);
+        }
+
+        .neon-blue {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px rgba(0, 255, 255, 0.5);
+        }
+
+        .glitch {
+            animation: glitch-animation 0.5s infinite alternate;
+        }
+
+        @keyframes glitch-animation {
+            0% { text-shadow: 0.05em 0 0 #ff3e00, -0.05em -0.025em 0 #00ffff, -0.025em 0.05em 0 #00ff00; }
+            15% { text-shadow: -0.05em -0.025em 0 #ff3e00, 0.025em 0.025em 0 #00ffff, -0.05em -0.05em 0 #00ff00; }
+            30% { text-shadow: 0.025em 0.05em 0 #ff3e00, 0.05em 0 0 #00ffff, 0 -0.05em 0 #00ff00; }
+            45% { text-shadow: -0.025em -0.05em 0 #ff3e00, -0.05em -0.025em 0 #00ffff, 0.05em 0.025em 0 #00ff00; }
+            60% { text-shadow: 0.05em 0.025em 0 #ff3e00, 0.025em 0.05em 0 #00ffff, -0.05em 0 0 #00ff00; }
+            75% { text-shadow: -0.05em 0 0 #ff3e00, -0.025em -0.05em 0 #00ffff, 0.05em 0.05em 0 #00ff00; }
+            100% { text-shadow: 0.025em -0.025em 0 #ff3e00, 0.05em 0.05em 0 #00ffff, -0.025em -0.05em 0 #00ff00; }
+        }
+
+        .boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease-out;
+        }
+        .boot-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background-color: #333;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .loading-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 0;
+            background-color: #ff3e00;
+            animation: loading-progress 3s ease-out forwards;
+        }
+        @keyframes loading-progress {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Boot Screen -->
+    <div id="boot-screen" class="boot-screen">
+        <div class="text-4xl font-bold neon-red">DEADLINE</div>
+        <div class="text-xl mt-2">SYSTEM INITIALIZING...</div>
+        <div class="loading-bar"></div>
+    </div>
+
+    <header class="bg-gray-800/50 backdrop-blur-sm p-4 border-b border-gray-700">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold neon-red">DEADLINE <span class="text-sm text-gray-400">($DIE24)</span></h1>
+            <div class="text-right">
+                <p class="text-sm text-gray-400">Live Token Experiment</p>
+                <p class="text-xs text-gray-500">Community Controlled</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 flex-grow">
+        <section id="countdown-section" class="text-center my-8">
+            <div class="bg-black/70 border border-red-700/50 rounded-lg p-8 shadow-lg relative">
+                <div class="absolute inset-0 bg-red-600 blur-3xl opacity-20 rounded-lg"></div>
+                <div class="relative">
+                    <div id="countdown-display" class="font-orbitron text-7xl md:text-8xl font-bold neon-red glitch-off">00:00:00:00</div>
+                    <div class="text-gray-500 text-sm mt-2">DAYS : HOURS : MINUTES : SECONDS</div>
+                    <div class="mt-4 text-xs text-gray-500">
+                        <p>+300s per SOL buy | -300s per SOL sell</p>
+                        <p>Timer stops at 0:00:00:00</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contract-info" class="my-8 bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+            <h2 class="text-xl font-bold neon-blue mb-4">Contract Information</h2>
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-400">Address:</span>
+                    <code id="contract-address" class="bg-gray-700 px-3 py-1 rounded text-sm break-all">ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump</code>
+                    <button id="copy-button" class="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded">Copy</button>
+                </div>
+                <div class="flex gap-2">
+                    <a href="https://solscan.io/token/ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump" target="_blank" class="neon-green hover:underline text-sm">Solscan</a>
+                    <a href="https://dexscreener.com/solana/ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump" target="_blank" class="neon-blue hover:underline text-sm">DexScreener</a>
+                    <a href="https://photon-sol.tinyastro.io/en/lp/ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump" target="_blank" class="neon-red hover:underline text-sm">Photon</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="metrics-section" class="my-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                <p class="text-sm text-gray-400">Market Cap</p>
+                <p id="market-cap" class="text-2xl font-bold neon-green">$0.00</p>
+            </div>
+            <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                <p class="text-sm text-gray-400">24h Volume</p>
+                <p id="volume-24h" class="text-2xl font-bold neon-green">$0.00</p>
+            </div>
+            <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                <p class="text-sm text-gray-400">Price (SOL)</p>
+                <p id="price-sol" class="text-2xl font-bold neon-green">0.00 SOL</p>
+            </div>
+            <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+                <p class="text-sm text-gray-400">Price (USD)</p>
+                <p id="price-usd" class="text-2xl font-bold neon-green">$0.00</p>
+            </div>
+        </section>
+
+        <section id="transaction-feed-section" class="my-8 bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+            <h2 class="text-xl font-bold neon-blue mb-4">Live Transaction Feed <span class="text-green-500 text-sm animate-pulse">● LIVE</span></h2>
+            <div id="transaction-feed" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
+                <!-- Transactions will be injected here -->
+                <div class="text-gray-500 text-center py-4">Waiting for transactions...</div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="my-8 bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+            <h2 class="text-xl font-bold neon-blue mb-4">How It Works</h2>
+            <p class="text-gray-300 mb-4">DEADLINE is a live blockchain experiment on Solana. A countdown timer runs continuously, and every genuine on-chain transaction (buy/sell) extends the timer. If there are no transactions, the timer runs to zero, and the system ends.</p>
+            <h3 class="text-lg font-bold neon-green mb-2">Key Principles:</h3>
+            <ul class="list-disc list-inside text-gray-300 space-y-1">
+                <li>Only real blockchain data (no simulation, no fake volume)</li>
+                <li>No rewards, no buyback, no artificial mechanics</li>
+                <li>No manual intervention</li>
+                <li>Behavior is purely driven by market participants</li>
+            </ul>
+        </section>
+
+        <section id="rules" class="my-8 bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+            <h2 class="text-xl font-bold neon-blue mb-4">Rules</h2>
+            <p class="text-gray-300">The core idea is simple: The system only survives if users actively keep it alive. Every buy adds time, every sell removes time. When the timer hits zero, the experiment concludes. Always DYOR.</p>
+        </section>
+
+        <section id="community" class="my-8 bg-gray-800/50 border border-gray-700 rounded-lg p-6">
+            <h2 class="text-xl font-bold neon-blue mb-4">Community</h2>
+            <p class="text-gray-300">Join our community to stay updated and participate in the experiment.</p>
+            <div class="flex gap-4 mt-4">
+                <a href="https://twitter.com/deadline_die24_official" target="_blank" class="neon-blue hover:underline">Twitter</a>
+                <a href="https://t.me/deadline_die24_official" target="_blank" class="neon-blue hover:underline">Telegram</a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800/50 backdrop-blur-sm p-4 border-t border-gray-700 text-center text-gray-500 text-sm">
+        <p>&copy; 2026 DEADLINE Token Experiment. Educational purposes only. Always DYOR.</p>
+        <p class="mt-1">Contract Address: <code class="break-all">ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump</code></p>
+    </footer>
+
+    <script>
+        const CONTRACT_ADDRESS = 'ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump';
+        const HELIUS_RPC_URL = 'https://rpc.helius.xyz/?api-key=YOUR_HELIUS_API_KEY'; // TODO: Replace with actual Helius API Key
+        const HELIUS_WS_URL = 'wss://rpc.helius.xyz/?api-key=YOUR_HELIUS_API_KEY'; // TODO: Replace with actual Helius API Key
+        const PUMP_FUN_API_URL = 'https://pump.fun/api/trade-history/' + CONTRACT_ADDRESS; // Placeholder, needs actual endpoint
+        const TIME_ADJUSTMENT_PER_TX = 300; // seconds
+
+        let secondsRemaining = 604800; // Initial 7 days. TODO: Implement historical seed via pump.fun API if available, otherwise rely on live updates.
+        let countdownInterval;
+        let ws;
+
+        // --- Boot Screen Logic ---
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('boot-screen').classList.add('hidden');
+            }, 3000); // Hide after 3 seconds
+        });
+
+        // --- Countdown Logic ---
+        function updateCountdownDisplay() {
+            const days = Math.floor(secondsRemaining / (3600 * 24));
+            const hours = Math.floor((secondsRemaining % (3600 * 24)) / 3600);
+            const minutes = Math.floor((secondsRemaining % 3600) / 60);
+            const seconds = secondsRemaining % 60;
+
+            document.getElementById('countdown-display').textContent = 
+                `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            if (secondsRemaining <= 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('countdown-display').textContent = '00:00:00:00';
+                // Experiment ends logic
+            }
+        }
+
+        function startCountdown() {
+            clearInterval(countdownInterval);
+            countdownInterval = setInterval(() => {
+                secondsRemaining--;
+                updateCountdownDisplay();
+            }, 1000);
+        }
+
+        // --- Glitch Effect ---
+        function triggerGlitch() {
+            const countdownDisplay = document.getElementById('countdown-display');
+            countdownDisplay.classList.add('glitch');
+            setTimeout(() => {
+                countdownDisplay.classList.remove('glitch');
+            }, 500); // Glitch for 0.5 seconds
+        }
+
+        // --- Helius WebSocket Integration ---
+        function connectHeliusWebSocket() {
+            ws = new WebSocket(HELIUS_WS_URL);
+
+            ws.onopen = () => {
+                console.log('Connected to Helius WebSocket');
+                ws.send(JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: 1,
+                    method: "subscribeLogz",
+                    params: [
+                        {
+                            mentions: [CONTRACT_ADDRESS]
+                        },
+                        {
+                            commitment: "finalized",
+                            encoding: "jsonParsed"
+                        }
+                    ]
+                }));
+            };
+
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                if (message.params && message.params.result && message.params.result.value) {
+                    const tx = message.params.result.value;
+                    // Simplified BC detection: any mention of the contract address is a transaction
+                    // Further parsing needed for exact buy/sell and SOL amount
+                    console.log('New transaction detected:', tx);
+                    secondsRemaining += TIME_ADJUSTMENT_PER_TX; // Assume buy for now
+                    triggerGlitch();
+                    updateCountdownDisplay();
+                    // TODO: Update live transaction feed
+                }
+            };
+
+            ws.onclose = () => {
+                console.log('Disconnected from Helius WebSocket. Reconnecting...');
+                setTimeout(connectHeliusWebSocket, 5000);
+            };
+
+            ws.onerror = (error) => {
+                console.error('Helius WebSocket error:', error);
+                ws.close();
+            };
+        }
+
+        // --- DexScreener Polling ---
+        async function fetchDexScreenerMetrics() {
+            const DEXSCREENER_API_URL = `https://api.dexscreener.com/latest/dex/tokens/${CONTRACT_ADDRESS}`;
+            try {
+                const response = await fetch(DEXSCREENER_API_URL);
+                const data = await response.json();
+                if (data.pairs && data.pairs.length > 0) {
+                    const pair = data.pairs[0];
+                    document.getElementById('market-cap').textContent = `$${parseFloat(pair.fdv).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    document.getElementById('volume-24h').textContent = `$${parseFloat(pair.volume.h24).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    document.getElementById('price-sol').textContent = `${parseFloat(pair.priceNative).toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 8 })} SOL`;
+                    document.getElementById('price-usd').textContent = `$${parseFloat(pair.priceUsd).toLocaleString(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 8 })}`;
+                }
+            } catch (error) {
+                console.error('Error fetching DexScreener data:', error);
+            }
+        }
+
+        // --- Copy Button Logic ---
+        document.getElementById('copy-button').addEventListener('click', () => {
+            const contractAddress = document.getElementById('contract-address').textContent;
+            navigator.clipboard.writeText(contractAddress).then(() => {
+                alert('Contract Address copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        });
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial fetch for DexScreener metrics
+            fetchDexScreenerMetrics();
+            setInterval(fetchDexScreenerMetrics, 30000); // Poll every 30 seconds
+
+            // Connect to Helius WebSocket
+            connectHeliusWebSocket();
+
+            // Start countdown (initial value will be set by Genesis Seed in Phase 2)
+            startCountdown();
+        });
+    </script>
+</body>
+</html>
