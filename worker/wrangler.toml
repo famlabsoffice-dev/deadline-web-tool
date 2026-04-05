@@ -1,0 +1,14 @@
+name = "deadline-tracker"
+main = "index.ts"
+compatibility_date = "2026-04-05"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "cc53583bb90649bfa5b8b19537e829a8"
+preview_id = "cc53583bb90649bfa5b8b19537e829a8"
+
+[triggers]
+crons = ["*/1 * * * *"]
+
+[env.production]
+vars = { SOLANA_RPC_URL = "https://rpc.helius.xyz/?api-key=YOUR_HELIUS_API_KEY", TARGET_ADDRESS = "ivePfEWguMSqZYHTKsqpQiaCH3D3PVsuYBciDBgpump", BACKEND_API_URL = "https://deadline-web-tool-backend.example.com", ADMIN_TOKEN = "your-admin-token-here" }
