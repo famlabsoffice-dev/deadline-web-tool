@@ -136,7 +136,7 @@ describe("transactions procedures", () => {
       amountUSD: "30",
       tokenAmount: "1000000",
       walletAddress: "wallet123",
-      timeAdjustment: 60,
+      timeAdjustment: 300,
       txHash: "hash123",
     });
 
@@ -153,7 +153,7 @@ describe("transactions procedures", () => {
       amountUSD: "20",
       tokenAmount: "500000",
       walletAddress: "wallet456",
-      timeAdjustment: -60,
+      timeAdjustment: -300,
       txHash: "hash456",
     });
 

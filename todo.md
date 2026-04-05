@@ -14,6 +14,7 @@
 - [x] Responsive Grid-Layout für Desktop und Mobile aufbauen
 
 ## WebSocket & Live-Daten
+- [x] Cloudflare Worker für Solana On-Chain-Tracking (getSignature) implementiert
 - [ ] WebSocket-Integration für Echtzeit-Transaktionsfeed einrichten
 - [ ] Real-time Timer-Updates via WebSocket implementieren
 - [ ] Pump.fun WebSocket API Integration (falls nötig)

@@ -46,7 +46,7 @@ export function CountdownTimer() {
 
             {/* Experiment info */}
             <div className="mt-8 text-xs text-gray-500 space-y-1">
-              <p>+60s per SOL buy | -60s per SOL sell</p>
+              <p>+300s per SOL buy | -300s per SOL sell</p>
               <p>Timer stops at 0:00:00</p>
             </div>
           </div>

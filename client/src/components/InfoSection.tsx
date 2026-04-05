@@ -36,12 +36,12 @@ export function InfoSection() {
             </p>
             <ul className="space-y-2 ml-4">
               <li className="flex items-start gap-3">
-                <span className="text-green-400 font-bold mt-1">+60s</span>
-                <span>Every SOL spent buying the token adds 60 seconds to the timer</span>
+                <span className="text-green-400 font-bold mt-1">+300s</span>
+                <span>Every SOL spent buying the token adds 300 seconds to the timer</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-red-400 font-bold mt-1">-60s</span>
-                <span>Every SOL spent selling the token removes 60 seconds from the timer</span>
+                <span className="text-red-400 font-bold mt-1">-300s</span>
+                <span>Every SOL spent selling the token removes 300 seconds from the timer</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="text-gray-400 font-bold mt-1">STOP</span>

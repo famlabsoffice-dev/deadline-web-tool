@@ -84,7 +84,7 @@ export const transactions = mysqlTable("transactions", {
   tokenAmount: varchar("tokenAmount", { length: 255 }).notNull(),
   /** Wallet address (truncated for privacy) */
   walletAddress: varchar("walletAddress", { length: 255 }).notNull(),
-  /** Time adjustment in seconds (+60 for buy, -60 for sell) */
+  /** Time adjustment in seconds (+300 for buy, -300 for sell) */
   timeAdjustment: int("timeAdjustment").notNull(),
   /** Transaction hash/ID from blockchain */
   txHash: varchar("txHash", { length: 255 }),
